@@ -1,0 +1,48 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using Rota_Fortunae.Components.Shared
+
+<PageTitle>Home</PageTitle>
+
+<h1>Rota Fortunae</h1>
+
+<p>
+    This little Blazor app demonstrates the use of my FortuneWheel component that renders a spinning fortune wheel.
+</p>
+
+<p>
+    Absolutely NO Javascript was used in the making of this tool!
+</p>
+
+<p>
+    <FortuneWheel @ref="MyWheel" Items=wheelItems SpinCompleted="CompleteSpin"></FortuneWheel>
+</p>
+
+<p>
+    <button class="btn btn-primary" @onclick="SpinWheel">Spin Wheel</button>
+</p>
+
+<p>
+    @result
+</p>
+
+@code {
+
+    FortuneWheel MyWheel = new FortuneWheel();
+
+    string[] wheelItems = { "Ben", "Dad", "Claire", "Mom", "Dog", "Gloria", "Rodney", "Squishy", "Pup", "Bill", "Bob",
+"Charlie", "Dean", "Phil", "Barb" };
+
+    private string result = string.Empty;
+
+    private void SpinWheel()
+    {
+        MyWheel.Spin();
+    }
+
+    public void CompleteSpin(string winner)
+    {
+        result = $"{winner} is the winner!";
+    }
+
+}

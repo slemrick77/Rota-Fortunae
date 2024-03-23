@@ -1,0 +1,176 @@
+<div class="outer-circle">
+
+    @for (int i = 0; i < wheelItems.Length; i++)
+    {
+        string wedgeColor = WheelUtilities.DetermineColor(i);
+        string textColor = "white";
+        if (wedgeColor == "yellow") textColor = "black";
+
+        <div class=@wedgeClassName
+            style="--slice-degrees: @sliceSize; --wedge-border-radius: @wedgeBorderRadius; --wedge-half-width: @wedgeHalfWidth; --wedge-multiple: @i; --wedge-color: @wedgeColor; --wedge-text-color: @textColor; --rotation-total: @rotationTotal;">
+            <div class="inner-text">
+                @wheelItems[i]
+            </div>
+        </div>
+
+    }
+    <div class="golden-arrow" style="--wedge-multiple: @wheelItems.Length;"></div>
+</div>
+
+@code {
+    //shift alt f - format code
+    //ctrl / - comment multiple lines
+
+    [Parameter]
+    public EventCallback<string> SpinCompleted {get; set;}
+
+    [Parameter]
+    public string[] Items {
+        get { return wheelItems; }
+        set { wheelItems = value; }
+    }
+
+    string wedgeClassName = string.Empty;
+
+    string sliceSize = string.Empty;
+
+    string wedgeBorderRadius = string.Empty;
+
+    string wedgeHalfWidth = string.Empty;
+
+    string rotationTotal = string.Empty;
+    int rotation = 0;
+
+    string[] wheelItems = {  };
+
+    protected override void OnInitialized()
+    {
+        wedgeClassName = "wedge";
+        
+        sliceSize = WheelUtilities.DetermineWedgeArc(wheelItems.Length);
+        wedgeBorderRadius = WheelUtilities.DetermineBorderRadius(wheelItems.Length);
+        wedgeHalfWidth = WheelUtilities.DetermineHalfWidth(wheelItems.Length);
+    }
+
+    private int DetermineWinner()
+    {
+        int sliceArc = 360/wheelItems.Length;
+
+        for (int i = 0; i < wheelItems.Length; i++)
+        {
+            decimal endPosition = DetermineEndPosition(i);
+
+            if (endPosition < (90 + (sliceArc/2)) && endPosition > (90 - (sliceArc/2)))
+            {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private decimal DetermineEndPosition(int wedgeNumber)
+    {
+        return ((360/wheelItems.Length)*wedgeNumber+rotation)%360;
+    }
+
+    public async void Spin()
+    {
+        rotation = WheelUtilities.GetRandomRotation();
+        rotationTotal = rotation.ToString() + "deg";
+
+        wedgeClassName = "wedge moving";
+        StateHasChanged();
+        await Task.Delay(10000);
+        wedgeClassName = "wedge stop";
+        StateHasChanged();
+        await SpinCompleted.InvokeAsync(wheelItems[DetermineWinner()]);
+    }
+
+    public class WheelUtilities{
+        public static string DetermineColor(int index)
+        {
+            switch (index)
+            {
+                case 0: { return "black"; }
+                case 1: { return "red"; }
+                case 2: { return "green"; }
+                case 3: { return "purple"; }
+                case 4: { return "blue"; }
+                case 5: { return "yellow"; }
+                case 6: { return "orange"; }
+                case 7: { return "red"; }
+                case 8: { return "green"; }
+                case 9: { return "purple"; }
+                case 10: { return "blue"; }
+                case 11: { return "yellow"; }
+                case 12: { return "orange"; }
+                case 13: { return "red"; }
+                case 14: { return "green"; }
+                case 15: { return "purple"; }
+                default: { return "black"; }
+            }
+        }
+
+        public static string DetermineBorderRadius(int wedgeCount)
+        {
+            switch (wedgeCount)
+            {
+                case 1: { return "50% / 14%"; }
+                case 2: { return "50% / 14%"; }
+                case 3: { return "50% / 14%"; }
+                case 4: { return "50% / 14%"; }
+                case 5: { return "50% / 14%"; }
+                case 6: { return "50% / 14%"; }
+                case 7: { return "50% / 8%"; }
+                case 8: { return "50% / 7%"; }
+                case 9: { return "50% / 5%"; }
+                case 10: { return "50% / 4%"; }
+                case 11: { return "50% / 3%"; }
+                case 12: { return "50% / 3%"; }
+                case 13: { return "50% / 2%"; }
+                case 14: { return "50% / 2%"; }
+                case 15: { return "50% / 2%"; }
+                default: { return "50% / 4%"; }
+            }
+
+        }
+
+        public static string DetermineHalfWidth(int wedgeCount)
+        {
+                switch (wedgeCount)
+                {
+                    case 1: { return "116px"; }
+                    case 2: { return "116px"; }
+                    case 3: { return "116px"; }
+                    case 4: { return "116px"; }
+                    case 5: { return "116px"; }
+                    case 6: { return "116px"; }
+                    case 7: { return "96px"; }
+                    case 8: { return "83px"; }
+                    case 9: { return "73px"; }
+                    case 10: { return "65px"; }
+                    case 11: { return "60px"; }
+                    case 12: { return "54px"; }
+                    case 13: { return "50px"; }
+                    case 14: { return "46px"; }
+                    case 15: { return "43px"; }
+                    default: { return "116px"; }
+                }
+
+        }
+
+        public static string DetermineWedgeArc(int wedgeCount)
+        {
+            return (360/wedgeCount).ToString() + "deg";
+        }
+
+        public static int GetRandomRotation()
+        {
+            var rand = new Random();
+            return rand.Next(720, 2160);
+        }
+
+    }
+
+}
