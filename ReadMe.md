@@ -1,6 +1,6 @@
 # Rota-Fortunae
 
-This is a blazor project that demonstrates my FortuneWheel component.
+This is a .NET Blazor project that demonstrates my FortuneWheel component.
 
 I did this as a proof of concept for a project on UpWork that I decided to pass on.  
 
